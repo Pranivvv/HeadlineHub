@@ -2,54 +2,61 @@ import './App.css';
 import Navbar from './components/Navbar';
 import News from './components/News';
 
-import React, { Component } from 'react';
+import React, { useState,} from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom';
 import LoadingBar from 'react-top-loading-bar';
 
-export default class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      mode: 'light',
-      apiKey: process.env.REACT_NEWSAPP_NEWS_APIKEY,
-      pageSize: 8,
-      country: 'us',
-      category: 'general',
-      progress: 0
-    };
-  }
+const App = ()=> {
+  // constructor() {
+  //   super();
+  //   this.state = {
+  //     mode: 'light',
+  //     apiKey: process.env.REACT_NEWSAPP_NEWS_APIKEY,
+  //     pageSize: 8,
+  //     country: 'us',
+  //     category: 'general',
+  //     progress: 0
+  //   };
+  // }
+  const apiKey = process.env.REACT_NEWSAPP_NEWS_APIKEY
+  const pageSize = 8
+  const country = 'us'
+  const [mode,setMode] = useState('light')
+  // const [category,setCategory] = useState('general')
+  const [progress,setProgress] = useState(0)
 
-  changeMode = () => {
-    this.setState((prevState) => {
-      const newMode = prevState.mode === 'light' ? 'dark' : 'light';
-      document.body.style.backgroundColor = newMode === 'dark' ? '#212529' : '#fff';
-      document.body.style.color = newMode === 'dark' ? '#fff' : '#212529';
-      return { mode: newMode };
-    });
+
+  
+
+  const changeMode = () => {
+    if (mode==='light'){
+      setMode('dark')
+      document.body.style.backgroundColor = '#212529'
+      document.body.style.color = '#fff'
+    }else{
+      setMode('light')
+      document.body.style.backgroundColor = '#fff'
+      document.body.style.color = '#212529'
+    }
   };
 
-  setProgress = (progress) => {
-    this.setState({ progress })
-  }
-
-  render() {
     const categories = ['general', 'business', 'entertainment', 'health', 'science', 'sports', 'technology'];
 
     const routes = categories.map((category) => ({
       path: category === 'general' ? '/' : `/${category}`,
       element: (
         <>
-          <Navbar mode={this.state.mode} changeMode={this.changeMode} />
+          <Navbar mode={mode} changeMode={changeMode} />
           <News
-            setProgress={this.setProgress}
-            key={category}
-            mode={this.state.mode}
-            apiKey={this.state.apiKey}
-            pageSize={this.state.pageSize}
-            country={this.state.country}
+            setProgress={setProgress}
+            key={category+pageSize}
+            mode={mode}
+            apiKey={apiKey}
+            pageSize={pageSize}
+            country={country}
             category={category}
           />
         </>
@@ -62,10 +69,12 @@ export default class App extends Component {
       <>
         <LoadingBar
           color='#f11946'
-          progress={this.state.progress}
+          progress={progress}
         />
         <RouterProvider router={router} />
       </>
     );
-  }
+  
 }
+
+export default App
